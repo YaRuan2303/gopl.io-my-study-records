@@ -38,10 +38,11 @@ import (
 //double result is  8
 
 //如下double函数的执行流程（思路流程整理清楚，key）：
-//1.
+//1.defer里的匿名函数是先执行还是最后执行？？？
+
 func double(x int) (result int) {
 	//defer trace("bigSlowOperation")()
-	defer func() { fmt.Printf("double(%d) = %d\n", x,result) }()   //分析这句，key...
+	defer func() { fmt.Printf("double(%d) = %d\n", x,result) }()   //分析这句，key...result=8why
 
 	return x + x
 	//执行流程：
