@@ -12,7 +12,10 @@ import "fmt"
 func main() {
 	f(3)
 }
-
+//func执行流程：
+//1. 先执行printf
+//2. 然后再执行f(x-1)，
+//3. 最后执行defer体内容
 func f(x int) {
 	fmt.Printf("f(%d)\n", x+0/x) // panics if x == 0
 	defer fmt.Printf("defer %d\n", x)
@@ -30,7 +33,8 @@ defer 1
 defer 2
 defer 3
 //!-stdout
-
+//当f(0)被调用时， 发生panic异常， 之前被延迟执行的的3个fmt.Printf被调用（key..！！！）。 程序中断执行
+//后， panic信息和堆栈信息会被输出（ 下面是简化的输出） ：
 //!+stderr
 panic: runtime error: integer divide by zero
 main.f(0)

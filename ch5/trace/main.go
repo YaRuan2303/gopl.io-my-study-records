@@ -9,13 +9,11 @@ package main
 import (
 	"fmt"
 	"log"
+	"os"
 	"time"
 )
 
-func triple(x int) (result int) {
-	defer func() { result += x }()
-	return double(x)
-} f
+
 
 
 
@@ -32,6 +30,48 @@ func triple(x int) (result int) {
 //!+main
 
 
+
+//在循环体中的defer语句需要特别注意， 因为只有在函数执行完毕后， 这些被延迟的函数才会
+//执行。 下面的代码会导致系统的文件描述符耗尽， 因为在所有文件都被处理之前， 没有文件
+//会被关闭。//所以正确的操作是，在文件处理完之后就立刻关闭；
+//执行流程：
+//循环打开多个文件进行操作；
+for _, filename := range filenames {
+	f, err := os.Open(filename)
+	if err != nil {
+		return err
+	}
+	//这个defer被循环执行了很多次；一个文件对应一个defer体
+	defer f.Close() // NOTE: risky; could run out of file， 这句只有在函数结束时才调用关闭文件资源；
+	descriptors
+	// ...process f…
+}
+
+for _, filename := range filenames {
+	if err := doFile(filename); err != nil {
+		return err
+	}
+}
+func doFile(filename string) error {
+	f, err := os.Open(filename) //打开文件
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+	// ...process f…
+}
+
+
+
+
+//执行流程：
+//1. 先执行double(x)，再执行defer体的匿名函数func;
+func triple(x int) (result int) {
+	defer func() {
+		result += x
+	}()  //8+4=12, 别忘了后面这个小括号，defer,go体的函数特有格式
+	return double(x)  //result:8
+}
 
 //如果先func,在trace，如下结果：这说明什么？
 //2019/09/18 18:17:55 enter bigSlowOperation
@@ -58,12 +98,12 @@ func triple(x int) (result int) {
 //double(4) = 8
 func double(x int) (result int) {
 	//defer trace("bigSlowOperation")()
-	fmt.Println("init: result is ", result)  //0
+	//fmt.Println("init: result is ", result)  //0
 	defer func() {
-		fmt.Println("22222222222222", result)
+		//fmt.Println("22222222222222", result)
 		fmt.Printf("double(%d) = %d\n", x,result)
 	}()   //分析这句，key...result=8why
-	fmt.Println("11111111111111111", result)
+	//fmt.Println("11111111111111111", result)
 	return x + x
 	//执行流程：
 	//先x + x = 8；在return 之前执行defer体
@@ -97,15 +137,17 @@ func double(x int) (result int) {
 func bigSlowOperation() { //功能：记录该函数被调用的初始时间和结束时间，还有该函数运行时间；
 	defer trace("bigSlowOperation")() // don't forget the extra parentheses //这是什么用法啊？？
 	// ...lots of work...
-	fmt.Println("33333333333333")
+	//fmt.Println("33333333333333")
 	time.Sleep(10 * time.Second) // simulate slow operation by sleeping
-	fmt.Println("44444444444444")
+	//fmt.Println("44444444444444")
 }
 
 func trace(msg string) func() {
 	start := time.Now()
 	log.Printf("enter %s", msg)
-	return func() { log.Printf("exit %s (%s)", msg, time.Since(start)) }
+	return func() {
+		log.Printf("exit %s (%s)", msg, time.Since(start))
+	}
 }
 
 //!-main
