@@ -37,7 +37,7 @@ import (
 
 func main() {
 	//!+main
-	m := url.Values{"lang": {"en"}} // direct construction
+	m := url.Values{"lang": {"en"}} // direct construction  //Values是个类型(对象)，这是什么意思的赋值？？？
 	m.Add("item", "1")
 	m.Add("item", "2")
 

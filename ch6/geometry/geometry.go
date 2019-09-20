@@ -9,7 +9,7 @@ package geometry   //忘了和package main的区别？？。。
 
 import "math"
 
-type Point struct{ X, Y float64 }
+type Point struct{ X, Y float64 }   //Point是一种类型，可以简称为类，Point类
 
 // traditional function
 func Distance(p, q Point) float64 {
