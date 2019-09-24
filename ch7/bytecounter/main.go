@@ -24,7 +24,7 @@ func (c *ByteCounter) Write(p []byte) (int, error) {
 func main() {
 	//!+main
 	var c ByteCounter
-	c.Write([]byte("hello"))
+	c.Write([]byte("hello")) //[]byte("hello")表示将string类型的"hello"强转为字节切片类型；
 	fmt.Println(c) // "5", = len("hello")
 
 	c = 0 // reset the counter
