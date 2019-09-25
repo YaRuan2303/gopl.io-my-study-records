@@ -23,7 +23,7 @@ type Track struct {
 	Length time.Duration
 }
 
-var tracks = []*Track{
+var tracks = []*Track{  //key,这是什么意思？？*Track指针类型的切片，切片内的元素为*Track指针类型，对*Track类型的切片值进行初始化操作；
 	{"Go", "Delilah", "From the Roots Up", 2012, length("3m38s")},
 	{"Go", "Moby", "Moby", 1992, length("3m37s")},
 	{"Go Ahead", "Alicia Keys", "As I Am", 2007, length("4m36s")},
@@ -58,8 +58,8 @@ func printTracks(tracks []*Track) {
 type byArtist []*Track
 
 func (x byArtist) Len() int           { return len(x) }
-func (x byArtist) Less(i, j int) bool { return x[i].Artist < x[j].Artist }
-func (x byArtist) Swap(i, j int)      { x[i], x[j] = x[j], x[i] }
+func (x byArtist) Less(i, j int) bool { return x[i].Artist < x[j].Artist } //表示从小到大的顺序排序？
+func (x byArtist) Swap(i, j int)      { x[i], x[j] = x[j], x[i] } //x[i]表示一个*Track类型的指针变量；
 
 //!-artistcode
 
@@ -144,7 +144,7 @@ Ready 2 Go  Martin Solveig  Smash              2011  4m24s
 //!+customcode
 type customSort struct {
 	t    []*Track
-	less func(x, y *Track) bool
+	less func(x, y *Track) bool  //一个func(x, y *Track) bool函数类型的函数变量；
 }
 
 func (x customSort) Len() int           { return len(x.t) }
@@ -155,13 +155,13 @@ func (x customSort) Swap(i, j int)      { x.t[i], x.t[j] = x.t[j], x.t[i] }
 
 func init() {
 	//!+ints
-	values := []int{3, 1, 4, 1}
+	values := []int{3, 1, 4, 1} //初始化一个int类型的切片；
 	fmt.Println(sort.IntsAreSorted(values)) // "false"
-	sort.Ints(values)
+	sort.Ints(values)  //Sort排序是从小到大的？
 	fmt.Println(values)                     // "[1 1 3 4]"
 	fmt.Println(sort.IntsAreSorted(values)) // "true"
 	sort.Sort(sort.Reverse(sort.IntSlice(values)))
-	fmt.Println(values)                     // "[4 3 1 1]"
+	fmt.Println(values)                     // "[4 3 1 1]"  //why?? why not "[1 1 3 4]"
 	fmt.Println(sort.IntsAreSorted(values)) // "false"
 	//!-ints
 }

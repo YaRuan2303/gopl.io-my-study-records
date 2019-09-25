@@ -58,8 +58,8 @@ func (f *celsiusFlag) Set(s string) error {
 // default value, and usage, and returns the address of the flag variable.
 // The flag argument must have a quantity and a unit, e.g., "100C".
 func CelsiusFlag(name string, value Celsius, usage string) *Celsius {
-	f := celsiusFlag{value}
-	flag.CommandLine.Var(&f, name, usage)
+	f := celsiusFlag{value}  //初始化一个celsiusFlag类型的变量f;
+	flag.CommandLine.Var(&f, name, usage)  //key, 传的是&f，而不是f，因为是指针类型的celsiusFlag实现了set方法；
 	return &f.Celsius
 }
 
