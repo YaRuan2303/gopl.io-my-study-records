@@ -22,7 +22,7 @@ type literal float64
 // A unary represents a unary operator expression, e.g., -x.
 type unary struct {
 	op rune // one of '+', '-'
-	x  Expr
+	x  Expr  //接口； TODO:这种结构体里包含接口的做法，如何使用？？？
 }
 
 // A binary represents a binary operator expression, e.g., x+y.
@@ -34,7 +34,7 @@ type binary struct {
 // A call represents a function call expression, e.g., sin(x).
 type call struct {
 	fn   string // one of "pow", "sin", "sqrt"
-	args []Expr
+	args []Expr //Expr接口接口类型的切片集合
 }
 
 //!-ast

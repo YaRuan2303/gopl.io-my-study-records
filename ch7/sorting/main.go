@@ -14,6 +14,44 @@ import (
 	"time"
 )
 
+/*
+
+byArtist:
+Title       Artist          Album              Year  Length
+-----       ------          -----              ----  ------
+Go Ahead    Alicia Keys     As I Am            2007  4m36s
+Go          Delilah         From the Roots Up  2012  3m38s
+Ready 2 Go  Martin Solveig  Smash              2011  4m24s
+Go          Moby            Moby               1992  3m37s
+
+Reverse(byArtist):
+Title       Artist          Album              Year  Length
+-----       ------          -----              ----  ------
+Go          Moby            Moby               1992  3m37s
+Ready 2 Go  Martin Solveig  Smash              2011  4m24s
+Go          Delilah         From the Roots Up  2012  3m38s
+Go Ahead    Alicia Keys     As I Am            2007  4m36s
+
+byYear:
+Title       Artist          Album              Year  Length
+-----       ------          -----              ----  ------
+Go          Moby            Moby               1992  3m37s
+Go Ahead    Alicia Keys     As I Am            2007  4m36s
+Ready 2 Go  Martin Solveig  Smash              2011  4m24s
+Go          Delilah         From the Roots Up  2012  3m38s
+
+Custom:
+Title       Artist          Album              Year  Length
+-----       ------          -----              ----  ------
+Go          Moby            Moby               1992  3m37s
+Go          Delilah         From the Roots Up  2012  3m38s
+Go Ahead    Alicia Keys     As I Am            2007  4m36s
+Ready 2 Go  Martin Solveig  Smash              2011  4m24s
+
+Process finished with exit code 0*/
+
+
+
 //!+main
 type Track struct {
 	Title  string
@@ -44,7 +82,7 @@ func length(s string) time.Duration {
 func printTracks(tracks []*Track) {
 	const format = "%v\t%v\t%v\t%v\t%v\t\n"
 	tw := new(tabwriter.Writer).Init(os.Stdout, 0, 8, 2, ' ', 0)
-	fmt.Fprintf(tw, format, "Title", "Artist", "Album", "Year", "Length")
+	fmt.Fprintf(tw, format, "Title", "Artist", "Album", "Year", "Length") //tw变量实现了io.Writer接口；
 	fmt.Fprintf(tw, format, "-----", "------", "-----", "----", "------")
 	for _, t := range tracks {
 		fmt.Fprintf(tw, format, t.Title, t.Artist, t.Album, t.Year, t.Length)
@@ -74,11 +112,12 @@ func (x byYear) Swap(i, j int)      { x[i], x[j] = x[j], x[i] }
 
 func main() {
 	fmt.Println("byArtist:")
-	sort.Sort(byArtist(tracks))
+	sort.Sort(byArtist(tracks))  //byArtist(tracks)表示类型转换，转成byArtist类型；
 	printTracks(tracks)
 
 	fmt.Println("\nReverse(byArtist):")
-	sort.Sort(sort.Reverse(byArtist(tracks)))
+	sort.Sort(sort.Reverse(byArtist(tracks))) //sort.Reverse(byArtist(tracks)的返回值为reverse类型的实体，满足Interface接口
+	//然后sort.Sort调用的less方法将是reverse类型实现的less方法；
 	printTracks(tracks)
 
 	fmt.Println("\nbyYear:")
@@ -87,7 +126,7 @@ func main() {
 
 	fmt.Println("\nCustom:")
 	//!+customcall
-	sort.Sort(customSort{tracks, func(x, y *Track) bool {
+	sort.Sort(customSort{tracks, func(x, y *Track) bool {  //学习这种做法；这个func是匿名函数； customSort直接赋值传参，而不是通过customSort变量来做；
 		if x.Title != y.Title {
 			return x.Title < y.Title
 		}
@@ -144,24 +183,30 @@ Ready 2 Go  Martin Solveig  Smash              2011  4m24s
 //!+customcode
 type customSort struct {
 	t    []*Track
-	less func(x, y *Track) bool  //一个func(x, y *Track) bool函数类型的函数变量；
+	less func(x, y *Track) bool  //一个func(x, y *Track) bool函数类型的函数变量；功能:x是否小于y;
 }
 
 func (x customSort) Len() int           { return len(x.t) }
-func (x customSort) Less(i, j int) bool { return x.less(x.t[i], x.t[j]) }
+func (x customSort) Less(i, j int) bool { return x.less(x.t[i], x.t[j]) }  //重新定义less函数的实现内容；
 func (x customSort) Swap(i, j int)      { x.t[i], x.t[j] = x.t[j], x.t[i] }
 
 //!-customcode
 
-func init() {
+func init() {  //这个函数干嘛用的？在main函数之前运行？
 	//!+ints
 	values := []int{3, 1, 4, 1} //初始化一个int类型的切片；
 	fmt.Println(sort.IntsAreSorted(values)) // "false"
-	sort.Ints(values)  //Sort排序是从小到大的？
+	sort.Ints(values)  //Sort排序是从小到大的？对，由less方法来实现的；
 	fmt.Println(values)                     // "[1 1 3 4]"
 	fmt.Println(sort.IntsAreSorted(values)) // "true"
-	sort.Sort(sort.Reverse(sort.IntSlice(values)))
+	sort.Sort(sort.Reverse(sort.IntSlice(values))) //先反转（按大到小排序），再排序；
 	fmt.Println(values)                     // "[4 3 1 1]"  //why?? why not "[1 1 3 4]"
 	fmt.Println(sort.IntsAreSorted(values)) // "false"
 	//!-ints
+
+/*	false
+	[1 1 3 4]
+	true
+	[4 3 1 1]
+	false*/
 }

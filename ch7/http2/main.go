@@ -32,13 +32,13 @@ func (db database) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		}
 	case "/price":
 		item := req.URL.Query().Get("item")
-		price, ok := db[item]
+		price, ok := db[item]  //map集合取值value, ok表示是否成功；
 		if !ok {
-			w.WriteHeader(http.StatusNotFound) // 404
+			w.WriteHeader(http.StatusNotFound	) // 404
 			fmt.Fprintf(w, "no such item: %q\n", item)
 			return
 		}
-		fmt.Fprintf(w, "%s\n", price)
+		fmt.Fprintf(w, "%s\n", price)  //因为输出字符串格式%s,所有这里会调用price的string方法，格式化输出；
 	default:
 		w.WriteHeader(http.StatusNotFound) // 404
 		fmt.Fprintf(w, "no such page: %s\n", req.URL)

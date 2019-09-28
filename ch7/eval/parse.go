@@ -56,7 +56,7 @@ func precedence(op rune) int {
 //        | '-' expr                    a unary operator (+-)
 //        | expr '+' expr               a binary operator (+-*/)
 //
-func Parse(input string) (_ Expr, err error) {
+func Parse(input string) (_ Expr, err error) {  //Expr接口
 	defer func() {
 		switch x := recover().(type) {
 		case nil:
@@ -68,6 +68,8 @@ func Parse(input string) (_ Expr, err error) {
 			panic(x)
 		}
 	}()
+
+
 	lex := new(lexer)
 	lex.scan.Init(strings.NewReader(input))
 	lex.scan.Mode = scanner.ScanIdents | scanner.ScanInts | scanner.ScanFloats

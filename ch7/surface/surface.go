@@ -15,7 +15,7 @@ import (
 )
 
 //!+parseAndCheck
-import "gopl.io/ch7/eval"
+import "gopl.io-master/ch7/eval"
 
 //!-parseAndCheck
 
@@ -109,4 +109,3 @@ func main() {
 	log.Fatal(http.ListenAndServe("localhost:8000", nil))
 }
 
-//!-main

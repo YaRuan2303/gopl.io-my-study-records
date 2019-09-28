@@ -19,11 +19,11 @@ func main() {
 	dec := xml.NewDecoder(os.Stdin)
 	var stack []string // stack of element names
 	for {
-		tok, err := dec.Token()
-		if err == io.EOF {
+		tok, err := dec.Token()  //tok为一个接口；
+		if err == io.EOF {  //表示文件读完了；
 			break
 		} else if err != nil {
-			fmt.Fprintf(os.Stderr, "xmlselect: %v\n", err)
+			fmt.Fprintf(os.Stderr, "xmlselect: %v\n", err)  //TODO: %v是打印什么格式？？？
 			os.Exit(1)
 		}
 		switch tok := tok.(type) {
